@@ -559,7 +559,9 @@ func (p *Parser) parseFunctionParams(pos Pos) (*ParamExprList, error) {
 		Items:         params,
 	}
 
-	// try to parse column arg list
+	// For some aggregate functions might support parametric arguments:
+	// e.g. QUANTILE(0.5)(x) or QUANTILE(0.5, 0.9)(x).
+	// So we need to have a check if there is another argument list with detecting the left bracket.
 	if p.matchTokenKind("(") {
 		columnArgList, err := p.parseColumnArgList(p.Pos())
 		if err != nil {
